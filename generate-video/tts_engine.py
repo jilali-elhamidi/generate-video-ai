@@ -19,6 +19,68 @@ try:
 except Exception:
     PYTTSX3_AVAILABLE = False
 
+def math_to_words(text):
+    replacements = {
+        '=': ' equals ',
+        '+': ' plus ',
+        '-': ' minus ',
+        '*': ' times ',
+        '×': ' times ',
+        '·': ' times ',
+        '/': ' divided by ',
+        '÷': ' divided by ',
+        '^': ' to the power of ',
+        '±': ' plus or minus ',
+        '(': ' open parenthesis ',
+        ')': ' close parenthesis ',
+        '[': ' open bracket ',
+        ']': ' close bracket ',
+        '{': ' open brace ',
+        '}': ' close brace ',
+        '<': ' less than ',
+        '>': ' greater than ',
+        '≤': ' less than or equal to ',
+        '≥': ' greater than or equal to ',
+        '<=': ' less than or equal to ',
+        '>=': ' greater than or equal to ',
+        '≠': ' not equal to ',
+        '≈': ' approximately equal to ',
+        '≡': ' congruent to ',
+        '∝': ' proportional to ',
+        '√': ' square root of ',
+        '∑': ' sum of ',
+        '∏': ' product of ',
+        '∫': ' integral of ',
+        '∞': ' infinity ',
+        '∂': ' partial ',
+        '∇': ' nabla ',
+        'π': ' pi ',
+        'θ': ' theta ',
+        'λ': ' lambda ',
+        'μ': ' mu ',
+        '∈': ' element of ',
+        '∉': ' not an element of ',
+        '⊂': ' subset of ',
+        '⊆': ' subset or equal to ',
+        '⊄': ' not a subset of ',
+        '⊇': ' superset or equal to ',
+        '∪': ' union ',
+        '∩': ' intersection ',
+        '∧': ' and ',
+        '∨': ' or ',
+        '⇒': ' implies ',
+        '⇔': ' if and only if ',
+        'deg': ' degrees ',
+        'mod': ' modulo ',
+        # ajoute d'autres symboles si nécessaire
+    }
+
+    for symbol, word in replacements.items():
+        text = text.replace(symbol, word)
+
+    text = ' '.join(text.split())
+    return text
+
 def synthesize_audio_coqui(text, output_path):
     """
     Synthesize using Coqui TTS (if available).
@@ -52,17 +114,19 @@ def synthesize_audio(text, output_path=None):
         output_path = tmp.name
         tmp.close()
 
+    processed = math_to_words(text)
+
     # Try Coqui first
     if TTS_AVAILABLE:
         try:
-            return synthesize_audio_coqui(text, output_path)
+            return synthesize_audio_coqui(processed, output_path)
         except Exception as e:
             logger.warning("Coqui TTS failed: %s", e)
 
     # Fallback to pyttsx3
     if PYTTSX3_AVAILABLE:
         try:
-            return synthesize_audio_pyttsx3(text, output_path)
+            return synthesize_audio_pyttsx3(processed, output_path)
         except Exception as e:
             logger.warning("pyttsx3 failed: %s", e)
 
