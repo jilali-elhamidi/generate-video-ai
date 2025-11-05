@@ -8,7 +8,7 @@ app = Flask(__name__)
 def generate():
     data = request.get_json()
     script = data.get("script", "")
-    title = data.get("title", "Explication")
+    title = data.get("title", "Expliacation")
     explanations = data.get("explanations", [])
     # If the client didn't specify, default to True when explanations are provided
     show_explanations_text = data.get("explanationsShowText")
